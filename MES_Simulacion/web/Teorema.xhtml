@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"      
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <h:head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="css/estilos.css" />
+        <title>Teorema Central del Limite</title>
+    </h:head>
+    <h:body>
+        <div class="centrado">
+            <p id="titulo">TEOREMA CENTRAL DEL LÍMITE</p>
+            <p id="descripcion">Vamos a definir una nueva muestra a partir de la generada
+                anteriormente para la Binomial, haciendo uso de su media y varianza. Cada valor y<sub>i</sub> será de la forma:</p>
+            <img alt="fórmula para calcular muestra" src="img/Binomial2Muestra.PNG"/>
+        </div>
+        
+        <div style="width: 100%;">
+            <div style="width: 50%; float: left;">
+                <p class="centrado">
+                    Muestra antigua:
+                </p>
+                <p:dataTable value="#{teoremaBean.binos}" var="bis" rowIndexVar="row" paginator="true" rows="10" paginatorAlwaysVisible="false" styleClass="tablica"  paginatorPosition="top">
+                    <p:column headerText="Variable">
+                        <h:outputText value="x#{row +1}" />
+                    </p:column>
+                    <p:column headerText="Valor">
+                        <h:outputText value="#{bis}"/>
+                    </p:column>
+                </p:dataTable>
+                <p class="link">
+                    <h:outputText class="medYvar" value="x&#772;: #{managedBean.media} ,  s&#178; : #{managedBean.varianza}"/> 
+                </p>
+            </div>
+                               
+            <div style="width: 50%; float: left;">
+                <p class="centrado">
+                    Muestra nueva:
+                </p>
+                <p:dataTable value="#{teoremaBean.nuevaMuestra}" var="valor" rowIndexVar="row" rendered="#{not empty teoremaBean.nuevaMuestra}" paginator="true" rows="10" paginatorAlwaysVisible="false" styleClass="tablica"  paginatorPosition="top">
+                        <p:column headerText="Variable">
+                            <h:outputText value="x#{row +1}" />
+                        </p:column>
+                        <p:column headerText="Valor">
+                            <h:outputText value="#{valor}"/>
+                        </p:column>
+                </p:dataTable>
+                <p class="link">
+                    <h:outputText class="medYvar" value="x&#772;: #{teoremaBean.media} ,  s&#178; : #{teoremaBean.varianza}"/>
+                </p>
+            </div>
+        </div>
+        <div class="total">
+            <p  style="margin-left: 1em; margin-top: 35em;">
+                Histograma de frecuencias para la nueva muestra y gráfica de densidad normal de media 0 y desv 1:
+            </p>
+        </div>
+        <p:chart type="bar" rendered="#{not empty teoremaBean.combinedModel}" model="#{teoremaBean.combinedModel}" styleClass="histograma" />
+    </h:body>
+</html>
+

@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"      
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="css/estilos.css" />
+        <title>Simulaciones</title>
+    </h:head>
+    <h:body>
+        <script type="text/javascript">
+            function unhide(divID) {
+              var item = document.getElementById(divID);
+              if (item) {
+                item.className= 'unhidden';
+              }
+            }
+          </script>
+        <div class="centrado">
+            <p id="titulo">SIMULACIÓN DE DISTRIBUCIONES DE PROBABILIDAD</p>
+            <p id="descripcion">Vamos a simular una distribución Binomial con parámetros 
+            N=tamaño de la muestra, n=nºpruebas independientes de Bernoulli y p=probabilidad de éxito</p>
+        </div>
+        <h:form class="inputs">
+            <a class="inputss" id="eneM">N:<h:inputText size="7" value="#{managedBean.n}" required="true"></h:inputText></a>
+            <a class="inputss" id="ene">n:<h:inputText size="7" value="#{managedBean.n2}" required="true"></h:inputText></a>
+            <a class="inputss" id="pe">p:<h:inputText size="7" value="#{managedBean.p}" required="true">
+                <f:validateDoubleRange minimum="0.001" maximum="1.0"/>
+            </h:inputText></a>
+            <h:commandButton class="boton" value="Calcular">
+                <f:actionListener binding="#{managedBean.calcular()}"/>
+                <f:actionListener binding="#{chartView.resetear()}" />
+            </h:commandButton>
+            <h:message for="eneM" class="error"></h:message>
+            <h:message for="ene" class="error"></h:message>
+            <h:message for="pe" class="error"></h:message>
+        </h:form>
+        
+        <br></br>
+        <div style="width: 100%;">
+            <div style="width: 50%; float: left;" >
+                <p:dataTable rendered="#{not empty managedBean.aleatorios}" value="#{managedBean.aleatorios}" var="numero" rowIndexVar="row"  paginator="true" rows="#{managedBean.n2}" paginatorAlwaysVisible="false" styleClass="tablica"  paginatorPosition="top">
+                    <p:column headerText="Num" width="10%">
+                        <h:outputText value="#{row +1}" />
+                    </p:column>
+                    <p:column headerText="Aleatorio generado">
+                        <h:outputText value="#{numero}"/>
+                    </p:column>
+                    <p:column headerText="Bernoullis">
+                        <h:outputText value="#{managedBean.bernoullis.get(managedBean.aleatorios.indexOf(numero))}"/>
+                    </p:column>
+                </p:dataTable>            
+            </div>
+
+            <div style="width: 50%; float: left; height: 100%;" >
+                <p:dataTable value="#{managedBean.binomiales}" rendered='#{not empty managedBean.binomiales}' var="bis" rowIndexVar="row"  paginator="true" rows="10" paginatorAlwaysVisible="false" styleClass="tablica"  paginatorPosition="top">
+                    <p:column headerText="Variable">
+                        <h:outputText value="x#{row +1}" />
+                    </p:column>
+                    <p:column headerText="Valor">
+                        <h:outputText value="#{bis}"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+          </div> 
+        <div style="width: 50%;" >
+           <h:form>
+               <h:commandButton class="boton" rendered='#{not empty managedBean.binomiales}' value="Generar Histograma" actionListener="#{chartView.createCombinedModel(managedBean.binomiales,managedBean.n2,managedBean.n)}"/>
+            </h:form>
+        </div>
+        <div>
+            <p:chart type="bar"  model="#{chartView.combinedModel}" styleClass="histograma" rendered="#{not empty chartView.combinedModel}"/>
+        </div>
+        
+        <c:if test="#{not empty chartView.combinedModel}" rendered="#{not empty chartView.combinedModel}">
+            <p>
+                Cálculo de la probabilidad para un valor puntual o intervalo mediante la muestra vs real
+            </p>
+            <div style="width: 100%; margin: 3em; height: 10em;">
+                <div style="width: 34%; float: left;">
+                    <p>
+                        Mediante la muestra:
+                    </p>
+                    <h:form>
+                        P ( X =
+                        <h:inputText id="prob" size="2" value="#{chartView.val0}" required="true">
+                                <f:validateLongRange minimum="0" maximum="#{managedBean.n2}"/>
+                        </h:inputText>
+                        <h:commandButton action="#{chartView.calcularPuntual(managedBean.n,managedBean.n2,managedBean.p)}" value="Calcular" class="boton" style="display: none"/>
+                        ) =  
+                        <h:outputText id="res" rendered="#{not empty chartView.probPuntual}" value="#{chartView.probPuntual}" class="output"/>                    
+                        <br></br>
+                        <h:message for="prob" class="error"></h:message>
+                    </h:form>
+                    <br></br>
+                    <h:form>
+                        P ( X C 
+                        <h:selectOneMenu value = "#{chartView.simbol1}" > 
+                            <f:selectItem itemValue = "[" itemLabel = " [ " /> 
+                            <f:selectItem itemValue = "(" itemLabel = " ( " /> 
+                        </h:selectOneMenu>
+                        <h:inputText id="val1" size="2" value="#{chartView.val1}" required="true">
+                                <f:validateLongRange minimum="0" maximum="#{managedBean.n2-1}"/>
+                        </h:inputText>                
+                        ,
+                        <h:inputText id="val2" size="2" value="#{chartView.val2}" required="true">
+                                <f:validateLongRange minimum="1" maximum="#{managedBean.n2}"/>
+                        </h:inputText>                
+                        <h:selectOneMenu value = "#{chartView.simbol2}"> 
+                            <f:selectItem itemValue = "]" itemLabel = " ] " /> 
+                            <f:selectItem itemValue = ")" itemLabel = " ) " /> 
+                        </h:selectOneMenu>
+                        <h:commandButton action="#{chartView.calcularInterval(managedBean.n,managedBean.n2,managedBean.p)}" value="Calcular" class="boton" style="display: none"/>                
+                        <h:outputText rendered="#{not empty chartView.probInterval}" value="#{chartView.probInterval}" class="output"/>                    
+                        <br></br>
+                        <h:message for="val1" class="error"></h:message>
+                        <h:message for="val2" class="error"></h:message>
+                    </h:form>
+                </div>
+
+                <div style="width: 33%; float: left;">
+                    <p>
+                       Real:
+                    </p>
+                    <img alt="Formula binomial" src="img/Binomial.PNG"/>
+                    <br></br>
+                    <h:outputText value="#{chartView.probReal}" class="output"/>                    
+                </div>
+                <div style="width: 33%; float: left;">
+                    <p>
+                        Error cometido:
+                    </p>
+                    <h:outputText rendered="#{not empty chartView.probInterval}" value="#{chartView.error}" class="error"/>
+                </div>
+              </div>
+            <br></br>
+            <h:form class="formula">
+                <h:commandButton  accesskey="medYvar" class="boton" value="Generar media y varianza muestrales" action="#{managedBean.generarMedVar()}"/>
+                <br></br>
+                <h:outputText id="medYvar" class="medYvar" rendered="#{managedBean.medYvarCalculadas}" value="x&#772;: #{managedBean.media} ,  s&sup2; : #{managedBean.varianza}"/>               
+            </h:form>
+            <h:form rendered="#{managedBean.medYvarCalculadas}" styleClass="link">
+                <h:commandLink target="_blank" action="Teorema.xhtml?faces-redirect=true" value="Aplicación del Teorema Central del Límite" actionListener="#{teoremaBean.iniciar(managedBean.binomiales, managedBean.media, managedBean.varianza, managedBean.n, managedBean.n2,managedBean.p)}"/>
+            </h:form>
+        </c:if>
+        
+    </h:body>
+</html>
+

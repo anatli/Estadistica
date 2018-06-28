@@ -1,0 +1,68 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 23-jun-2018, 20:40:20
+    Author     : Asus
+*/
+.centrado{    
+    text-align: center;
+    background-color:  lavender;
+    padding: 1em;
+    margin: 1.2em;
+}
+#titulo{
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    font-size: 1.3em;
+}
+#descripcion{
+    font-size: 1.05em;
+}
+.inputs{
+    margin-left: 1em;
+}
+
+.error {
+    color: red;
+}
+.tablica{
+    font-size:1em;
+    table-layout: auto;
+    width: 90%;
+    text-align: right;
+    margin: 1em;
+    float: left;
+    height: 100%;
+}
+.histograma{
+    height:300px;
+    margin: 3em;
+}
+.inputss{
+    margin: 1em;
+}
+.formula{
+    margin: 2em;
+}
+.tablaProbs{
+    margin: 2em;
+    width: 80%;
+}
+.medYvar{
+    background-color: yellow;
+    margin: 1.1em;
+    bottom: 0;
+    left: 1em;
+}
+.boton{
+    background-color: lavender;  
+    margin: 1.1em;
+}
+.link{
+    margin: 1em;
+    text-align: center;
+}
+.hidden { display: none }
+.unhidden {  display: block}
